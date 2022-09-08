@@ -21,7 +21,7 @@
                 <td><%= @movie.category %></td>
               </tr>
               <tr>
-                <td><strong>Rating:</strong></td>
+                <td><strong>Rating IMDB:</strong></td>
                 <td><%= @movie.rating %></td>
               </tr>
             </tbody>
@@ -51,10 +51,12 @@
 </div>
 
 <div>
+  <% if current_user&.admin? %>
   <%= link_to "Edit this movie", edit_movie_path(@movie) %> |
   <%= link_to "Back to movies", movies_path %>
 
   <%= button_to "Destroy this movie", @movie, method: :delete %>
+  <% end %>
 </div>
 
 <script>
