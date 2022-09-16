@@ -1,29 +1,31 @@
 class MoviesController < ApplicationController
-  before_action :set_movie, only: %i[ show edit update destroy ]
-  before_action :authenticate_user!, except: %i[ index show]
+  before_action :set_movie, only: %i[show edit update destroy]
+  before_action :authenticate_user!, except: %i[index show]
+  
   def index
-    @movies = Movie.all
+    if params[:category].present?
+      @movies = Movie.where(category: params[:category]).paginate(page: params[:page], per_page: 3)
+      @categories = Movie.pluck(:category).uniq
+    else
+      @movies = Movie.paginate(page: params[:page], per_page: 3)
+    end
   end
 
   def show
     @reviews = Review.where(movie_id: @movie.id).order("created_at DESC")
-
-    if @reviews.blank?
-      @avg_review = 0
-    else
-      @avg_review = @reviews.average(:rating).round(2)
-    end
+   
+    @avg_review = @movie.avg
   end
 
   def new
-    @movie = current_user.movies.build
+    @movie = Movie.new
   end
 
   def edit
   end
 
   def create
-    @movie = current_user.movies.build(movie_params)
+    @movie = Movie.new(movie_params)
 
     respond_to do |format|
       if @movie.save

@@ -5,12 +5,25 @@
   </div>
 <% end %>
 
+<%= form_tag(movies_path, method: :get, class: 'mb-5') do %>
+  <div class='d-flex mb-3'>
+    <div class="form-group p-1">
+      <label class="mb-1">Category:</label>
+        <%= select_tag :category, options_for_select( Movie.all.map { |m| m.category }.uniq), class: "form-select" %>
+        <%= submit_tag 'Apply Filters' , name: nil, class: 'btn btn-secondary' %>
+    </div>
+  </div>
+<%  end %>
+
 <div class="row">
   <% @movies.each do |movie| %>
     <div class="col-sm-6 col-md-3">
       <div class="thumbnail">
-        <%= link_to (image_tag movie.image.url(:medium), class: 'image'), movie %>
+        <%= image_tag movie.image, size: "450x600" %>
+        <%= link_to movie.title, movie_path(movie), class: 'btn btn-secondary btn-sm', :method => :get %>
       </div>
     </div>
   <% end %>
 </div>
+
+<%= will_paginate %>

@@ -10,16 +10,14 @@ class ReviewsController < ApplicationController
   end
 
   def new
-    @review = Review.new
+    @review = Review.new(movie_id: @movie.id)
   end
 
   def edit
   end
 
   def create
-    @review = Review.new(review_params)
-    @review.user_id = current_user.id
-    @review.movie_id = @movie.id
+    @review = Review.new(review_params.merge(user_id: current_user.id, movie_id: @movie.id))
 
     respond_to do |format|
       if @review.save

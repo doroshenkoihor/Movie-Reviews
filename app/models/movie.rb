@@ -1,7 +1,15 @@
 class Movie < ApplicationRecord
-	belongs_to :user
-	has_many :reviews
+	has_many :reviews, dependent: :destroy
 
-	has_attached_file :image, styles: { medium: "400x600#" }
-	validates_attachment_content_type :image, content_type: /\Aimage\/.*\Z/
+	has_one_attached :image
+
+	def update_average_rating
+	  avg = 0
+	  
+	  if reviews.present?
+        avg = reviews.average(:rating).round(2)
+      end
+
+      update(avg: avg)
+	end
 end
